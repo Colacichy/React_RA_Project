@@ -4,3 +4,22 @@
     font-family: 'Gill Sans';
     width: fit-content;
 }
+.divTwo{
+    margin-left: 20%;
+    margin-top: 20px;
+    border: 1px solid black;
+    border-bottom: dotted;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+.divButton{
+    display: flex;
+    flex-direction: row;
+}
+.divThree{
+    margin-left: 20%;
+    border: 1px solid black;
+    border-top: none;
+    width: 50%;
+}
