@@ -1,6 +1,5 @@
 import "./App.css";
-import Sci from "./Sci";
-import MyOwnTable from "./MyOwnTable";
+import Task01 from "./task01/Cards";
 
 function App() {
   return (
@@ -8,8 +7,7 @@ function App() {
       <div className="App">
         <h1>Hello World!</h1>
       </div>
-      <Sci />
-      <MyOwnTable />
+      <Task01/>
     </>
   );
 }
