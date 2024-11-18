@@ -9,7 +9,7 @@ function Task02() {
     vanilla: false,
     chocolate: false,
     raspberry: false,
-    gender: "Male",
+    gender: "",
   });
 
   const [allFormData, setAllFormData] = useState([]);
@@ -119,20 +119,49 @@ function Task02() {
         </div>
 
         <div>
-          {["Male", "Female", "Shmetterling"].map((gender) => (
-            <div className="form-check" key={gender}>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="gender"
-                id={gender}
-                checked={formData.gender === gender}
-                onChange={() => genderChange(gender)}
-              />
-              <label htmlFor={gender} className="form-check-label">{gender}</label>
-            </div>
-          ))}
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="gender"
+              id="Male"
+              checked={formData.gender === "Male"}
+              onChange={() => genderChange("Male")}
+            />
+            <label htmlFor="Male" className="form-check-label">
+              Male
+            </label>
+          </div>
+
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="gender"
+              id="Female"
+              checked={formData.gender === "Female"}
+              onChange={() => genderChange("Female")}
+            />
+            <label htmlFor="Female" className="form-check-label">
+              Female
+            </label>
+          </div>
+
+          <div className="form-check">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="gender"
+              id="schmetterling"
+              checked={formData.gender === "schmetterling"}
+              onChange={() => genderChange("schmetterling")}
+            />
+            <label htmlFor="schmetterling" className="form-check-label">
+              Schmetterling
+            </label>
+          </div>
         </div>
+
 
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>
@@ -143,9 +172,7 @@ function Task02() {
       <ul>
         {allFormData.map(({ name, surname, age, gender, vanilla, chocolate, raspberry }, index) => (
           <li key={index}>
-            <strong>{name} {surname}</strong>, Age: {age}, Gender: {gender}
-            <br />
-            Taste: {vanilla && "Vanilla "} {chocolate && "Chocolate "} {raspberry && "Raspberry"}
+            Name: {name} Surname: {surname}, Age: {age}, Taste: {vanilla && "Vanilla "} {chocolate && "Chocolate "} {raspberry && "Raspberry"}, Gender: {gender} 
           </li>
         ))}
       </ul>
