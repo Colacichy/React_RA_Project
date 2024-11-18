@@ -1,5 +1,5 @@
 import "./App.css";
-import Task01 from "./task01/Cards";
+import Task02 from "./Task02";
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       <div className="App">
         <h1>Hello World!</h1>
       </div>
-      <Task01/>
+      <Task02/>
     </>
   );
 }
