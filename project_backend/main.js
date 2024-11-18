@@ -3,6 +3,25 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 
+app.use(cors());
+app.use(bodyParser.json()); 
+
+let allFormData = [];
+
+app.post('/task02/postData', (req, res) => {
+  const newData = req.body;
+  allFormData.push(newData);
+  res.status(200).send({ message: 'Data received' });
+});
+
+app.get('/task02/getData', (req, res) => {
+  res.status(200).json({
+    message: 'Fetched all form data successfully!',
+    data: allFormData 
+  });
+});
+
+
 app.get('/', (req, res) => {
   res.send('hello world')
 });
