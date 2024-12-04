@@ -1,13 +1,10 @@
 import "./App.css";
-import Task02 from "./Task02";
+import Pokemons from "./Pokemons";
 
 function App() {
   return (
     <>
-      <div className="App">
-        <h1>Hello World!</h1>
-      </div>
-      <Task02/>
+      <Pokemons/>
     </>
   );
 }
