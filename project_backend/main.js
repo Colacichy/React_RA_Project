@@ -14,27 +14,37 @@ const pokedex = require("./data/pokedex.json");
 const types = require("./data/types.json");
 
 app.get("/pokemon", (req, res) => {
-  const pokemonWithImages = pokedex.map((pokemon) => {
-    const id = pokemon.id.toString().padStart(3, "0");
-    const imagePath = path.join(__dirname, "images", `${id}.png`);
-    let base64Image = null;
+  const { query, types } = req.query;
 
-    if (fs.existsSync(imagePath)) {
-      const image = fs.readFileSync(imagePath, { encoding: "base64" });
-      base64Image = `data:image/png;base64,${image}`;
-    }
+  let filteredPokemon = pokedex;
 
-    return {
-      ...pokemon,
-      image: base64Image,
-    };
+  if (types) {
+    const typeArray = Array.isArray(types) ? types : [types];
+    filteredPokemon = filteredPokemon.filter((p) =>
+      typeArray.some((type) => p.type.includes(type))
+    );
+  }
+
+  if (query) {
+    const lowerCaseQuery = query.toLowerCase();
+    filteredPokemon = filteredPokemon.filter((p) =>
+      p.name.english.toLowerCase().includes(lowerCaseQuery)
+    );
+  }
+
+  const enrichedPokemon = filteredPokemon.map((p) => {
+    const imagePath = path.join(
+      __dirname,
+      "images",
+      `${String(p.id).padStart(3, "0")}.png`
+    );
+    const image = fs.existsSync(imagePath)
+      ? fs.readFileSync(imagePath, "base64")
+      : null;
+    return { ...p, image: image ? `data:image/png;base64,${image}` : null };
   });
 
-  res.json(pokemonWithImages);
-});
-
-app.get("/pokemon/types", (req, res) => {
-  res.json(types);
+  res.json(enrichedPokemon);
 });
 
 app.get("/pokemon/type/:type", (req, res) => {
