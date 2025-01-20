@@ -6,11 +6,11 @@ import Navbar from "./pokemonComponents/Navbar";
 function Pokemons() {
   const [pokemonData, setPokemonData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState("");
+  const [selectedTypes, setSelectedTypes] = useState([]);
   const [types, setTypes] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:5000/pokemon/types")
+      .get("http://localhost:8080/pokemon/types")
       .then((response) => setTypes(response.data))
       .catch((error) => console.error("Error fetching types:", error));
   }, []);
@@ -18,25 +18,30 @@ function Pokemons() {
   const fetchPokemonData = () => {
     const params = {};
 
-    if (searchQuery) params.query = searchQuery;
-    if (selectedType) params.type = selectedType;
+    if (selectedTypes.length > 0) {
+      params.type = selectedTypes; 
+    }
+
+    if (searchQuery) {
+      params.query = searchQuery; 
+    }
 
     axios
-      .get("http://localhost:5000/pokemon/search", { params })
+      .get("http://localhost:8080/pokemon/search", { params })
       .then((response) => setPokemonData(response.data))
       .catch((error) => console.error("Error fetching Pokémon data:", error));
   };
 
   useEffect(() => {
     fetchPokemonData();
-  }, [searchQuery, selectedType]);
+  }, [searchQuery, selectedTypes]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
 
-  const handleTypeChange = (type) => {
-    setSelectedType(type);
+  const handleTypeChange = (types) => {
+    setSelectedTypes(types);
   };
 
   return (
@@ -45,6 +50,7 @@ function Pokemons() {
         onSearch={handleSearch}
         types={types}
         onTypeChange={handleTypeChange}
+        selectedTypes={selectedTypes}
       />
       <div className="container mt-4">
         <PokemonList pokemonData={pokemonData} />
