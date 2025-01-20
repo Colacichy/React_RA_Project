@@ -8,7 +8,6 @@ function Pokemons() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [types, setTypes] = useState([]);
-
   useEffect(() => {
     axios
       .get("http://localhost:5000/pokemon/types")

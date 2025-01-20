@@ -1,12 +1,51 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const bcrypt = require('bcryptjs');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
 const fs = require("fs");
 const path = require("path");
+
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+let submittedData = [];
+
+app.post('/submit', async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    submittedData.push({ name, email, password: hashedPassword });
+    res.status(200).send({ message: 'Dane zostały wysłane' });
+  } catch (error) {
+    console.error('Błąd hashowania', error);
+    res.status(500).send({ message: 'Wystąpił błąd' });
+  }
+});
+
+app.get('/data', (req, res) => {
+  res.status(200).json(submittedData);
+});
+
+app.get('/images', (req, res) => {
+  const imagesDir = path.join(__dirname, 'images');
+  
+  fs.readdir(imagesDir, (err, files) => {
+    if (err) {
+      return res.status(500).send({ message: 'Błąd odczytu folderu obrazów' });
+    }
+    
+    const imageFiles = files.filter(file => /\.(png|jpg|jpeg|gif)$/i.test(file));
+    
+    res.status(200).json(imageFiles);
+  });
+});
+
+
 
 // pokedex ponizej
 
