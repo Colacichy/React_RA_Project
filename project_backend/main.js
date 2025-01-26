@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
 const fs = require("fs");
 const path = require("path");
 
@@ -13,16 +12,16 @@ const path = require("path");
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 let submittedData = [];
+let imageCache = {};
 
 app.post('/submit', async (req, res) => {
   const { name, email, password } = req.body;
-
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     submittedData.push({ name, email, password: hashedPassword });
     res.status(200).send({ message: 'Dane zostały wysłane' });
   } catch (error) {
-    console.error('Błąd hashowania', error);
+    console.error('Błąd podczas hashowania', error);
     res.status(500).send({ message: 'Wystąpił błąd' });
   }
 });
@@ -31,20 +30,36 @@ app.get('/data', (req, res) => {
   res.status(200).json(submittedData);
 });
 
-app.get('/images', (req, res) => {
+app.get('/images', async (req, res) => {
+  const { filename } = req.query;
   const imagesDir = path.join(__dirname, 'images');
-  
-  fs.readdir(imagesDir, (err, files) => {
-    if (err) {
-      return res.status(500).send({ message: 'Błąd odczytu folderu obrazów' });
-    }
-    
-    const imageFiles = files.filter(file => /\.(png|jpg|jpeg|gif)$/i.test(file));
-    
-    res.status(200).json(imageFiles);
-  });
-});
 
+  if (filename) {
+    if (imageCache[filename]) {
+      console.log(`Serving ${filename} from cache`);
+      return res.status(200).sendFile(imageCache[filename]);
+    }
+
+    const imagePath = path.join(imagesDir, filename);
+    if (fs.existsSync(imagePath)) {
+      console.log(`Loading ${filename} with delay`);
+      setTimeout(() => {
+        imageCache[filename] = imagePath;
+        res.status(200).sendFile(imagePath);
+      }, 3000);
+    } else {
+      res.status(404).send({ message: 'Obraz nie znaleziony' });
+    }
+  } else {
+    try {
+      const files = fs.readdirSync(imagesDir).filter(file => /\.(png|jpg|jpeg|gif)$/i.test(file));
+      res.status(200).json(files);
+    } catch (error) {
+      console.error('Błąd odczytu folderu obrazów', error);
+      res.status(500).send({ message: 'Błąd serwera' });
+    }
+  }
+});
 
 
   // pokedex ponizej
