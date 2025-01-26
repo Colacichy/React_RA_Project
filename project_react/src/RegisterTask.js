@@ -39,24 +39,6 @@ function RegisterTask() {
       await submitData(value);
       alert("Dane zostały wysłane!");
     },
-    validations: {
-      name: (value) => {
-        if (!value) return "Imię jest wymagane";
-        if (value.length < 3) return "Imię musi mieć co najmniej 3 znaki";
-        return undefined;
-      },
-      email: (value) => {
-        if (!value) return "Email jest wymagany";
-        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        if (!emailPattern.test(value)) return "Email jest nieprawidłowy";
-        return undefined;
-      },
-      password: (value) => {
-        if (!value) return "Hasło jest wymagane";
-        if (value.length < 6) return "Hasło musi mieć co najmniej 6 znaków";
-        return undefined;
-      },
-    }
   });
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -133,7 +115,13 @@ function RegisterTask() {
         }}
       >
         <div className="mb-3">
-          <form.Field name="name">
+          <form.Field
+            name="name"
+            validators={{
+              onChange: ({ value }) =>
+                !value ? "Imię jest wymagane" : undefined,
+            }}
+          >
             {(field) => (
               <>
                 <label htmlFor={field.name} className="form-label">
@@ -157,7 +145,14 @@ function RegisterTask() {
           </form.Field>
         </div>
         <div className="mb-3">
-          <form.Field name="email">
+          <form.Field
+            name="email"
+            validators={{
+              onChange: ({ value }) =>
+                !value ? "Email jest wymagany" : 
+                !/\S+@\S+\.\S+/.test(value) ? "Nieprawidłowy format emaila" : undefined,
+            }}
+          >
             {(field) => (
               <>
                 <label htmlFor={field.name} className="form-label">
@@ -181,7 +176,14 @@ function RegisterTask() {
           </form.Field>
         </div>
         <div className="mb-3">
-          <form.Field name="password">
+          <form.Field
+            name="password"
+            validators={{
+              onChange: ({ value }) =>
+                !value ? "Hasło jest wymagane" : 
+                value.length < 6 ? "Hasło musi mieć co najmniej 6 znaków" : undefined,
+            }}
+          >
             {(field) => (
               <>
                 <label htmlFor={field.name} className="form-label">
